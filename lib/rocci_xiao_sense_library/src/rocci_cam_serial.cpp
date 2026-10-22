@@ -10,7 +10,9 @@ static bool send_next_image = false;
 
 void rocci_cam_serial_init(void)
 {
-    Serial.begin(115200);
+    Serial.begin(921600);
+    Serial.setRxBufferSize(256 * 1024);
+    Serial.setTxBufferSize(256 * 1024);
     while(!Serial); // When the serial monitor is turned on, the program starts to execute
 }
 
@@ -65,8 +67,9 @@ void rocci_cam_serial_process_image(camera_fb_t *fb)
 
 void send_image_to_serial(camera_fb_t *fb)
 {
-    Serial.write(START_CODE, 4);
-    Serial.write("I", 1);
+    const uint8_t *magic = (const uint8_t *)START_CODE;
+    Serial.write(magic, 4);
+    Serial.write((uint8_t)'I');
     Serial.write((uint8_t*)&fb->len, sizeof(fb->len));
     Serial.write(fb->buf, fb->len);
 }
