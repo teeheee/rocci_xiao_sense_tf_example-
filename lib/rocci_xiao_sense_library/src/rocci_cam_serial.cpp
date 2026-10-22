@@ -23,7 +23,7 @@ void rocci_cam_serial_process(void)
             send_next_image = true;
         } else if (command == "process") {
             camera_fb_t fb;
-            fb.buf = malloc(96 * 96 * 2); // Allocate buffer for 96x96 RGB565 image
+            fb.buf = (uint8_t*)malloc(96 * 96 * 2); // Allocate buffer for 96x96 RGB565 image
             fb.len = 96 * 96 * 2;
             fb.width = 96;
             fb.height = 96;
@@ -73,15 +73,19 @@ void send_image_to_serial(camera_fb_t *fb)
 
 void send_to_terminal(const char *message, ...)
 {
-    if(quite_mode_flag) {
+    if (quite_mode_flag) {
         return;
     }
-    Serial.print(START_CODE);
-    Serial.print("T");
+
+    char buffer[256];
     va_list args;
     va_start(args, message);
-    Serial.printf(message, args);
+    vsnprintf(buffer, sizeof(buffer), message, args);
     va_end(args);
+
+    Serial.print(START_CODE);
+    Serial.print("T");
+    Serial.print(buffer);
 }
 
 void draw_box(int x, int y, int width, int height, uint16_t color)
