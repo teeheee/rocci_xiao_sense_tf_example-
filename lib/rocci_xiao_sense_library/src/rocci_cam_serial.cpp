@@ -68,9 +68,23 @@ void rocci_cam_serial_process_image(camera_fb_t *fb)
 void send_image_to_serial(camera_fb_t *fb)
 {
     const uint8_t *magic = (const uint8_t *)START_CODE;
+    uint16_t width = static_cast<uint16_t>(fb->width);
+    uint16_t height = static_cast<uint16_t>(fb->height);
+    uint32_t length = static_cast<uint32_t>(fb->len);
+    uint8_t header[9] = {
+        static_cast<uint8_t>(width & 0xFF),
+        static_cast<uint8_t>(width >> 8),
+        static_cast<uint8_t>(height & 0xFF),
+        static_cast<uint8_t>(height >> 8),
+        static_cast<uint8_t>(fb->format),
+        static_cast<uint8_t>(length & 0xFF),
+        static_cast<uint8_t>((length >> 8) & 0xFF),
+        static_cast<uint8_t>((length >> 16) & 0xFF),
+        static_cast<uint8_t>((length >> 24) & 0xFF),
+    };
     Serial.write(magic, 4);
-    Serial.write((uint8_t)'I');
-    Serial.write((uint8_t*)&fb->len, sizeof(fb->len));
+    Serial.write((uint8_t)'F');
+    Serial.write(header, sizeof(header));
     Serial.write(fb->buf, fb->len);
 }
 
