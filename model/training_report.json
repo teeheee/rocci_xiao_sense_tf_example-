@@ -1,0 +1,21 @@
+{
+  "classes": [
+    "bridge",
+    "empty",
+    "flat"
+  ],
+  "training_images": 29,
+  "validation_images": 6,
+  "validation_accuracy": 0.8333333134651184,
+  "tflite_validation_accuracy": 1.0,
+  "validation_loss": 0.5604279041290283,
+  "model_bytes": 5800,
+  "input_shape": [
+    1,
+    96,
+    96,
+    3
+  ],
+  "input_dtype": "<class 'numpy.uint8'>",
+  "output_dtype": "<class 'numpy.uint8'>"
+}
